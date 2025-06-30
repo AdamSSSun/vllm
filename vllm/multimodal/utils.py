@@ -13,7 +13,7 @@ from PIL import Image
 import vllm.envs as envs
 from vllm.connections import HTTPConnection, global_http_connection
 
-from .audio import AudioMediaIO
+from .audio import AudioMediaIO,AudioMediaIOWithTorch
 from .base import MediaIO
 from .image import ImageEmbeddingMediaIO, ImageMediaIO
 from .inputs import PlaceholderRange
@@ -141,7 +141,7 @@ class MediaConnector:
         """
         Load audio from a URL.
         """
-        audio_io = AudioMediaIO()
+        audio_io = AudioMediaIO() if not envs.VLLM_AUDIO_SAMPLER_WITH_GPU else AudioMediaIOWithTorch()
 
         return self.load_from_url(
             audio_url,
@@ -156,7 +156,7 @@ class MediaConnector:
         """
         Asynchronously fetch audio from a URL.
         """
-        audio_io = AudioMediaIO()
+        audio_io = AudioMediaIO() if not envs.VLLM_AUDIO_SAMPLER_WITH_GPU else AudioMediaIOWithTorch()
 
         return await self.load_from_url_async(
             audio_url,
