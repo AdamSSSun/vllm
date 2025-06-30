@@ -13,7 +13,7 @@ from transformers import BatchFeature
 from typing_extensions import TypeAlias, TypeGuard, assert_never
 
 from vllm.utils import is_list_of
-
+import vllm.envs as envs
 from .audio import AudioResampler
 from .inputs import (AudioItem, HfAudioItem, HfImageItem, HfVideoItem,
                      ImageItem, ModalityData, MultiModalDataDict,
@@ -312,7 +312,7 @@ class MultiModalDataParser:
         self,
         *,
         target_sr: Optional[float] = None,
-        audio_resample_method: Literal["librosa", "scipy"] = "librosa",
+        audio_resample_method: Literal["librosa", "scipy", "torch"] = "librosa" if not envs.VLLM_AUDIO_SAMPLER_WITH_GPU else "torch",
     ) -> None:
         super().__init__()
 
