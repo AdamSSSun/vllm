@@ -110,7 +110,7 @@ if TYPE_CHECKING:
     VLLM_USE_DEEP_GEMM: bool = False
     VLLM_XGRAMMAR_CACHE_MB: int = 0
     VLLM_MSGPACK_ZERO_COPY_THRESHOLD: int = 256
-
+    VLLM_AUDIO_SAMPLER_WITH_GPU: bool = False
 
 def get_default_cache_root():
     return os.getenv(
@@ -727,6 +727,16 @@ environment_variables: dict[str, Callable[[], Any]] = {
     # limit will actually be zero-copy decoded.
     "VLLM_MSGPACK_ZERO_COPY_THRESHOLD":
     lambda: int(os.getenv("VLLM_MSGPACK_ZERO_COPY_THRESHOLD", "256")),
+
+
+    # If set to `1` or `true` via export VLLM_AUDIO_SAMPLER_WITH_GPU=`value`
+    # audio sampler will use GPU(implement by torchaudio,
+    # default implement by librosa or scipy)
+    # to accelerate the sampling process.
+    "VLLM_AUDIO_SAMPLER_WITH_GPU":
+    lambda:
+    (os.environ.get("VLLM_AUDIO_SAMPLER_WITH_GPU", "0").strip().lower() in
+     ("1", "true")),
 }
 
 # end-env-vars-definition
