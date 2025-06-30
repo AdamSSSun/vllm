@@ -61,12 +61,12 @@ def resample_audio_torch(
 ) -> npt.NDArray[np.floating]:
     if not isinstance(audio,torch.Tensor):
         raise RuntimeError("resample_audio_torch need `audio` is type of torch.Tensor")
+
     resampler = torchaudio.transforms.Resample(
         orig_freq=orig_sr,
         new_freq=target_sr
     ).to(device=audio.device)
 
-    # 执行重采样（直接在 GPU 上进行）
     resampled_audio = resampler(audio).squeeze(0).cpu().numpy()
     return resampled_audio
 
